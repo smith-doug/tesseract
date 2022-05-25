@@ -304,6 +304,70 @@ struct CollisionCheckConfig
   /** @brief Longest valid segment to use if type supports lvs. Default: 0.005*/
   double longest_valid_segment_length{ 0.005 };
 };
+
+struct ContactTrajectorySubstepResults
+{
+  ContactTrajectorySubstepResults() = default;
+  ContactTrajectorySubstepResults(int substep, Eigen::VectorXd start_state, Eigen::VectorXd end_state);
+  ContactTrajectorySubstepResults(int substep, Eigen::VectorXd state);
+
+  int numContacts();
+
+  tesseract_collision::ContactResultVector worstCollision();
+
+  tesseract_collision::ContactResultMap contacts;
+  int substep = -1;
+  Eigen::VectorXd state0;
+  Eigen::VectorXd state1;
+};
+
+struct ContactTrajectoryStepResults
+{
+  ContactTrajectoryStepResults() = default;
+  ContactTrajectoryStepResults(int step_number,
+                               Eigen::VectorXd start_state,
+                               Eigen::VectorXd end_state,
+                               int num_substeps);
+  ContactTrajectoryStepResults(int step_number, Eigen::VectorXd state);
+  int numSubsteps();
+
+  int numContacts();
+
+  ContactTrajectorySubstepResults worstSubstep();
+
+  tesseract_collision::ContactResultVector worstCollision();
+
+  ContactTrajectorySubstepResults mostCollisionsSubstep();
+
+  std::vector<ContactTrajectorySubstepResults> substeps;
+  int step = -1;
+  Eigen::VectorXd state0;
+  Eigen::VectorXd state1;
+  int total_substeps;
+};
+
+struct ContactTrajectoryResults
+{
+  ContactTrajectoryResults() = default;
+  ContactTrajectoryResults(std::vector<std::string> j_names, int num_steps);
+
+  int numSteps();
+
+  int numContacts();
+
+  ContactTrajectoryStepResults worstStep();
+
+  tesseract_collision::ContactResultVector worstCollision();
+
+  ContactTrajectoryStepResults mostCollisionsStep();
+
+  std::stringstream trajectoryCollisionResultsTable();
+
+  std::vector<ContactTrajectoryStepResults> steps;
+  std::vector<std::string> joint_names;
+  int total_steps;
+};
+
 }  // namespace tesseract_collision
 
 #endif  // TESSERACT_COLLISION_TYPES_H
