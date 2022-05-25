@@ -243,7 +243,7 @@ bool checkTrajectory(std::vector<tesseract_collision::ContactResultMap>& contact
 
         for (int iSubStep = 0; iSubStep < subtraj.rows() - 1; ++iSubStep)
         {
-          tesseract_collision::ContactTrajectorySubstepResults substep_contacts(iSubStep, subtraj.row(iSubStep));
+          tesseract_collision::ContactTrajectorySubstepResults substep_contacts(iSubStep + 1, subtraj.row(iSubStep));
 
           tesseract_scene_graph::SceneState state0 = state_solver.getState(joint_names, subtraj.row(iSubStep));
           tesseract_scene_graph::SceneState state1 = state_solver.getState(joint_names, subtraj.row(iSubStep + 1));
@@ -369,7 +369,7 @@ bool checkTrajectory(std::vector<tesseract_collision::ContactResultMap>& contact
 
         for (int iSubStep = 0; iSubStep < subtraj.rows() - 1; ++iSubStep)
         {
-          tesseract_collision::ContactTrajectorySubstepResults substep_contacts(iSubStep, subtraj.row(iSubStep));
+          tesseract_collision::ContactTrajectorySubstepResults substep_contacts(iSubStep + 1, subtraj.row(iSubStep));
 
           tesseract_common::TransformMap state0 = manip.calcFwdKin(subtraj.row(iSubStep));
           tesseract_common::TransformMap state1 = manip.calcFwdKin(subtraj.row(iSubStep + 1));
@@ -523,7 +523,7 @@ bool checkTrajectory(std::vector<tesseract_collision::ContactResultMap>& contact
 
         for (int iSubStep = 0; iSubStep < subtraj.rows() - 1; ++iSubStep)
         {
-          tesseract_collision::ContactTrajectorySubstepResults substep_contacts(iSubStep, subtraj.row(iSubStep));
+          tesseract_collision::ContactTrajectorySubstepResults substep_contacts(iSubStep + 1, subtraj.row(iSubStep));
 
           tesseract_scene_graph::SceneState state = state_solver.getState(joint_names, subtraj.row(iSubStep));
           tesseract_collision::ContactResultMap sub_state_results =
@@ -675,7 +675,7 @@ bool checkTrajectory(std::vector<tesseract_collision::ContactResultMap>& contact
 
         for (int iSubStep = 0; iSubStep < subtraj.rows() - 1; ++iSubStep)
         {
-          tesseract_collision::ContactTrajectorySubstepResults substep_contacts(iSubStep, subtraj.row(iSubStep));
+          tesseract_collision::ContactTrajectorySubstepResults substep_contacts(iSubStep + 1, subtraj.row(iSubStep));
 
           tesseract_common::TransformMap state = manip.calcFwdKin(subtraj.row(iSubStep));
           tesseract_collision::ContactResultMap sub_state_results =
