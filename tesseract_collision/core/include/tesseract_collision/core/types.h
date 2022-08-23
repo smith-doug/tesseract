@@ -307,13 +307,15 @@ struct CollisionCheckConfig
 
 struct ContactTrajectorySubstepResults
 {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
   ContactTrajectorySubstepResults() = default;
-  ContactTrajectorySubstepResults(int substep, Eigen::VectorXd start_state, Eigen::VectorXd end_state);
-  ContactTrajectorySubstepResults(int substep, Eigen::VectorXd state);
+  ContactTrajectorySubstepResults(const int& substep, Eigen::VectorXd start_state, Eigen::VectorXd end_state);
+  ContactTrajectorySubstepResults(const int& substep, Eigen::VectorXd state);
 
-  int numContacts();
+  int numContacts() const;
 
-  tesseract_collision::ContactResultVector worstCollision();
+  tesseract_collision::ContactResultVector worstCollision() const;
 
   tesseract_collision::ContactResultMap contacts;
   int substep = -1;
@@ -323,49 +325,51 @@ struct ContactTrajectorySubstepResults
 
 struct ContactTrajectoryStepResults
 {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
   ContactTrajectoryStepResults() = default;
-  ContactTrajectoryStepResults(int step_number,
+  ContactTrajectoryStepResults(const int& step_number,
                                Eigen::VectorXd start_state,
                                Eigen::VectorXd end_state,
-                               int num_substeps);
-  ContactTrajectoryStepResults(int step_number, Eigen::VectorXd state);
-  int numSubsteps();
+                               const int& num_substeps);
+  ContactTrajectoryStepResults(const int& step_number, const Eigen::VectorXd& state);
+  int numSubsteps() const;
 
-  int numContacts();
+  int numContacts() const;
 
-  ContactTrajectorySubstepResults worstSubstep();
+  ContactTrajectorySubstepResults worstSubstep() const;
 
-  tesseract_collision::ContactResultVector worstCollision();
+  tesseract_collision::ContactResultVector worstCollision() const;
 
-  ContactTrajectorySubstepResults mostCollisionsSubstep();
+  ContactTrajectorySubstepResults mostCollisionsSubstep() const;
 
   std::vector<ContactTrajectorySubstepResults> substeps;
   int step = -1;
   Eigen::VectorXd state0;
   Eigen::VectorXd state1;
-  int total_substeps;
+  int total_substeps = 0;
 };
 
 struct ContactTrajectoryResults
 {
   ContactTrajectoryResults() = default;
-  ContactTrajectoryResults(std::vector<std::string> j_names, int num_steps);
+  ContactTrajectoryResults(std::vector<std::string> j_names, const int& num_steps);
 
-  int numSteps();
+  int numSteps() const;
 
-  int numContacts();
+  int numContacts() const;
 
-  ContactTrajectoryStepResults worstStep();
+  ContactTrajectoryStepResults worstStep() const;
 
-  tesseract_collision::ContactResultVector worstCollision();
+  tesseract_collision::ContactResultVector worstCollision() const;
 
-  ContactTrajectoryStepResults mostCollisionsStep();
+  ContactTrajectoryStepResults mostCollisionsStep() const;
 
-  std::stringstream trajectoryCollisionResultsTable();
+  std::stringstream trajectoryCollisionResultsTable() const;
 
   std::vector<ContactTrajectoryStepResults> steps;
   std::vector<std::string> joint_names;
-  int total_steps;
+  int total_steps = 0;
 };
 
 }  // namespace tesseract_collision

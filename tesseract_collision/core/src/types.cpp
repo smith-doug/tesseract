@@ -108,25 +108,25 @@ CollisionCheckConfig::CollisionCheckConfig(double default_margin,
 {
 }
 
-ContactTrajectorySubstepResults::ContactTrajectorySubstepResults(int substep_number,
+ContactTrajectorySubstepResults::ContactTrajectorySubstepResults(const int& substep_number,
                                                                  Eigen::VectorXd start_state,
                                                                  Eigen::VectorXd end_state)
-  : substep(substep_number), state0(start_state), state1(end_state)
+  : substep(substep_number), state0(std::move(start_state)), state1(std::move(end_state))
 {
 }
 
-ContactTrajectorySubstepResults::ContactTrajectorySubstepResults(int substep_number, Eigen::VectorXd state)
-  : substep(substep_number), state0(state), state1(state)
+ContactTrajectorySubstepResults::ContactTrajectorySubstepResults(const int& substep_number, Eigen::VectorXd state)
+  : substep(substep_number), state0(std::move(state)), state1(std::move(state))
 {
 }
 
-int ContactTrajectorySubstepResults::numContacts() { return static_cast<int>(contacts.size()); }
+int ContactTrajectorySubstepResults::numContacts() const { return static_cast<int>(contacts.size()); }
 
-tesseract_collision::ContactResultVector ContactTrajectorySubstepResults::worstCollision()
+tesseract_collision::ContactResultVector ContactTrajectorySubstepResults::worstCollision() const
 {
   tesseract_collision::ContactResultVector worst_collision;
   double worst_distance = std::numeric_limits<double>::max();
-  for (auto collision : contacts)
+  for (const auto& collision : contacts)
   {
     if (collision.second.front().distance < worst_distance)
     {
@@ -137,36 +137,36 @@ tesseract_collision::ContactResultVector ContactTrajectorySubstepResults::worstC
   return worst_collision;
 }
 
-ContactTrajectoryStepResults::ContactTrajectoryStepResults(int step_number,
+ContactTrajectoryStepResults::ContactTrajectoryStepResults(const int& step_number,
                                                            Eigen::VectorXd start_state,
                                                            Eigen::VectorXd end_state,
-                                                           int num_substeps)
-  : step(step_number), state0(start_state), state1(end_state), total_substeps(num_substeps)
+                                                           const int& num_substeps)
+  : step(step_number), state0(std::move(start_state)), state1(std::move(end_state)), total_substeps(num_substeps)
 {
   substeps.resize(static_cast<std::size_t>(num_substeps));
 }
 
-ContactTrajectoryStepResults::ContactTrajectoryStepResults(int step_number, Eigen::VectorXd state)
+ContactTrajectoryStepResults::ContactTrajectoryStepResults(const int& step_number, const Eigen::VectorXd& state)
   : step(step_number), state0(state), state1(state), total_substeps(1)
 {
   substeps.resize(static_cast<std::size_t>(1));
 }
 
-int ContactTrajectoryStepResults::numSubsteps() { return static_cast<int>(substeps.size()); }
+int ContactTrajectoryStepResults::numSubsteps() const { return static_cast<int>(substeps.size()); }
 
-int ContactTrajectoryStepResults::numContacts()
+int ContactTrajectoryStepResults::numContacts() const
 {
   int num_contacts = 0;
-  for (auto substep : substeps)
+  for (const auto& substep : substeps)
     num_contacts += substep.numContacts();
   return num_contacts;
 }
 
-ContactTrajectorySubstepResults ContactTrajectoryStepResults::worstSubstep()
+ContactTrajectorySubstepResults ContactTrajectoryStepResults::worstSubstep() const
 {
   ContactTrajectorySubstepResults worst_substep;
   double worst_distance = std::numeric_limits<double>::max();
-  for (auto substep : substeps)
+  for (const auto& substep : substeps)
   {
     tesseract_collision::ContactResultVector substep_worst_collision = substep.worstCollision();
     if (substep_worst_collision.front().distance < worst_distance)
@@ -178,17 +178,17 @@ ContactTrajectorySubstepResults ContactTrajectoryStepResults::worstSubstep()
   return worst_substep;
 }
 
-tesseract_collision::ContactResultVector ContactTrajectoryStepResults::worstCollision()
+tesseract_collision::ContactResultVector ContactTrajectoryStepResults::worstCollision() const
 {
   tesseract_collision::ContactResultVector worst_collision = worstSubstep().worstCollision();
   return worst_collision;
 }
 
-ContactTrajectorySubstepResults ContactTrajectoryStepResults::mostCollisionsSubstep()
+ContactTrajectorySubstepResults ContactTrajectoryStepResults::mostCollisionsSubstep() const
 {
   int most_contacts = 0;
   ContactTrajectorySubstepResults most_collisions_substep;
-  for (auto substep : substeps)
+  for (const auto& substep : substeps)
   {
     if (substep.numContacts() > most_contacts)
     {
@@ -199,27 +199,27 @@ ContactTrajectorySubstepResults ContactTrajectoryStepResults::mostCollisionsSubs
   return most_collisions_substep;
 }
 
-ContactTrajectoryResults::ContactTrajectoryResults(std::vector<std::string> j_names, int num_steps)
-  : joint_names(j_names), total_steps(num_steps)
+ContactTrajectoryResults::ContactTrajectoryResults(std::vector<std::string> j_names, const int& num_steps)
+  : joint_names(std::move(j_names)), total_steps(num_steps)
 {
   steps.resize(static_cast<std::size_t>(num_steps));
 }
 
-int ContactTrajectoryResults::numSteps() { return static_cast<int>(steps.size()); }
+int ContactTrajectoryResults::numSteps() const { return static_cast<int>(steps.size()); }
 
-int ContactTrajectoryResults::numContacts()
+int ContactTrajectoryResults::numContacts() const
 {
   int num_contacts = 0;
-  for (auto step : steps)
+  for (const auto& step : steps)
     num_contacts += step.numContacts();
   return num_contacts;
 }
 
-ContactTrajectoryStepResults ContactTrajectoryResults::worstStep()
+ContactTrajectoryStepResults ContactTrajectoryResults::worstStep() const
 {
   ContactTrajectoryStepResults worst_step;
   double worst_distance = std::numeric_limits<double>::max();
-  for (auto step : steps)
+  for (const auto& step : steps)
   {
     tesseract_collision::ContactResultVector step_worst_collision = step.worstCollision();
     if (step_worst_collision.front().distance < worst_distance)
@@ -231,17 +231,17 @@ ContactTrajectoryStepResults ContactTrajectoryResults::worstStep()
   return worst_step;
 }
 
-tesseract_collision::ContactResultVector ContactTrajectoryResults::worstCollision()
+tesseract_collision::ContactResultVector ContactTrajectoryResults::worstCollision() const
 {
   tesseract_collision::ContactResultVector worst_collision = worstStep().worstCollision();
   return worst_collision;
 }
 
-ContactTrajectoryStepResults ContactTrajectoryResults::mostCollisionsStep()
+ContactTrajectoryStepResults ContactTrajectoryResults::mostCollisionsStep() const
 {
   int most_contacts = 0;
   ContactTrajectoryStepResults most_collisions_step;
-  for (auto step : steps)
+  for (const auto& step : steps)
   {
     if (step.numContacts() > most_contacts)
     {
@@ -251,7 +251,7 @@ ContactTrajectoryStepResults ContactTrajectoryResults::mostCollisionsStep()
   }
   return most_collisions_step;
 }
-std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable()
+std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable() const
 {
   // Possible multiple contacts for every substep
   // For every contact need to display contact distance, link1, link2
@@ -286,7 +286,7 @@ std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable()
   // Joint Names can vary widely
   std::string joint_name_title = "JOINT NAMES";
   int longest_joint_name_width = static_cast<int>(joint_name_title.size()) + 2;
-  for (auto name : joint_names)
+  for (const auto& name : joint_names)
   {
     if (static_cast<int>(name.size()) + 2 > longest_joint_name_width)
       longest_joint_name_width = static_cast<int>(name.size()) + 2;
@@ -300,15 +300,13 @@ std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable()
   std::string state1_title = "STATE1";
   int longest_state0_width = 9;  // Default negative sign, number, decimal point, four places, plus space either side
   int longest_state1_width = 9;
-  for (auto step : steps)
+  for (const auto& step : steps)
   {
     for (int i = 0; i < static_cast<int>(step.state0.size()); i++)
     {
       double state0_value = step.state0(i);
-      int state0_width = 0;
       if (state0_value < 0)
       {
-        state0_width += 1;
         state0_value *= -1;
       }
       int state0_number_digits_left_decimal = static_cast<int>(std::log10(state0_value)) + 1;
@@ -317,10 +315,8 @@ std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable()
             state0_number_digits_left_decimal + 7;  // + 4 after decimal + 2 for spaces either side + 1 for decimal
 
       double state1_value = step.state1(i);
-      int state1_width = 0;
       if (state1_value < 0)
       {
-        state1_width += 1;
         state1_value *= -1;
       }
       int state1_number_digits_left_decimal = static_cast<int>(std::log10(state1_value)) + 1;
@@ -336,7 +332,7 @@ std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable()
   // Substep will almost certainly be the width of substep, but still check
   std::string substep_title = "SUBSTEP";
   int longest_substep_width = 2 + static_cast<int>(substep_title.size());
-  for (auto step : steps)
+  for (const auto& step : steps)
   {
     // Check to make sure there are value, could be empty if checking for first collision
     if (step.numSubsteps() == 0)
@@ -357,11 +353,11 @@ std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable()
   std::string link2_title = "LINK2";
   int longest_link1_width = static_cast<int>(link1_title.size()) + 2;
   int longest_link2_width = static_cast<int>(link2_title.size()) + 2;
-  for (auto step : steps)
+  for (const auto& step : steps)
   {
-    for (auto substep : step.substeps)
+    for (const auto& substep : step.substeps)
     {
-      for (auto collision : substep.contacts)
+      for (const auto& collision : substep.contacts)
       {
         std::string link1_name = collision.second.front().link_names[0];
         if (static_cast<int>(link1_name.size()) + 2 > longest_link1_width)
@@ -386,16 +382,10 @@ std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable()
   substep_details_width += longest_distance_width;
 
   // Construct strings for displaying info on a new state and new substate
-  std::string new_step_string = "";
-  for (int i = 0; i < step_details_width; i++)
-    new_step_string += "*";
+  std::string new_step_string(static_cast<std::size_t>(step_details_width), '*');
   new_step_string += "|";
-  std::string new_substep_string = "";
-  for (int i = 0; i < substep_details_width; i++)
-  {
-    new_step_string += "*";
-    new_substep_string += "-";
-  }
+  new_step_string += std::string(static_cast<std::size_t>(substep_details_width), '*');
+  std::string new_substep_string(static_cast<std::size_t>(substep_details_width), '-');
 
   // Start making the table
   // Start on new line to avoid offset by anythnig on previous line
@@ -409,7 +399,7 @@ std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable()
 
   ss << new_step_string << std::endl;
 
-  for (auto step : steps)
+  for (const auto& step : steps)
   {
     // Check if there are contacts in this step
     if (step.numContacts() == 0)
@@ -418,7 +408,7 @@ std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable()
     // Create string for stating the step number, repeated on every line of this step. example: 2/23
     std::string step_number_string = std::to_string(step.step) + "/" + std::to_string(total_steps);
     int line_number = 0;
-    for (auto substep : step.substeps)
+    for (const auto& substep : step.substeps)
     {
       // Check if there are contacts in this substep
       if (substep.numContacts() == 0)
@@ -428,7 +418,7 @@ std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable()
       std::string substep_string = std::to_string(substep.substep) + "/" + std::to_string(step.total_substeps);
 
       // Iterate over every collision in this substep
-      for (auto collision : substep.contacts)
+      for (const auto& collision : substep.contacts)
       {
         // Write the current substep string
         ss << std::setw(longest_steps_width) << step_number_string;
