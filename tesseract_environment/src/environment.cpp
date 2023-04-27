@@ -343,7 +343,7 @@ std::vector<std::string> Environment::getGroupJointNames(const std::string& grou
   auto cache_it = group_joint_names_cache_.find(group_name);
   if (cache_it != group_joint_names_cache_.end())
   {
-    CONSOLE_BRIDGE_logDebug("Environment, getGroupJointNames(%s) cache hit!", group_name.c_str());
+    // CONSOLE_BRIDGE_logDebug("Environment, getGroupJointNames(%s) cache hit!", group_name.c_str());
     return cache_it->second;
   }
 
@@ -383,7 +383,7 @@ tesseract_kinematics::JointGroup::UPtr Environment::getJointGroup(const std::str
   auto it = joint_group_cache_.find(group_name);
   if (it != joint_group_cache_.end())
   {
-    CONSOLE_BRIDGE_logDebug("Environment, getJointGroup(%s) cache hit!", group_name.c_str());
+    // CONSOLE_BRIDGE_logDebug("Environment, getJointGroup(%s) cache hit!", group_name.c_str());
     return std::make_unique<tesseract_kinematics::JointGroup>(*it->second);
   }
 
@@ -413,8 +413,8 @@ tesseract_kinematics::KinematicGroup::UPtr Environment::getKinematicGroup(const 
   auto it = kinematic_group_cache_.find(key);
   if (it != kinematic_group_cache_.end())
   {
-    CONSOLE_BRIDGE_logDebug(
-        "Environment, getKinematicGroup(%s, %s) cache hit!", group_name.c_str(), ik_solver_name.c_str());
+    //    CONSOLE_BRIDGE_logDebug(
+    //        "Environment, getKinematicGroup(%s, %s) cache hit!", group_name.c_str(), ik_solver_name.c_str());
     return std::make_unique<tesseract_kinematics::KinematicGroup>(*it->second);
   }
 

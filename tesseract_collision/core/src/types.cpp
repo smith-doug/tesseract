@@ -444,7 +444,7 @@ std::stringstream ContactTrajectoryResults::trajectoryCollisionResultsTable() co
         ss << std::setw(longest_substep_width) << substep_string;
         ss << std::setw(longest_link1_width) << collision.second.front().link_names[0];
         ss << std::setw(longest_link2_width) << collision.second.front().link_names[1];
-        ss << std::setw(longest_distance_width) << collision.second.front().distance;
+        ss << std::setprecision(10) << std::setw(16)  <<  collision.second.front().distance << std::setprecision(4);
         ss << std::endl;
         line_number++;
       }
