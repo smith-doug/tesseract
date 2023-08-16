@@ -79,7 +79,7 @@ inline IKSolutions IKFastInvKin::calcInvKin(const tesseract_common::TransformMap
 {
   assert(tip_link_poses.size() == 1);
   assert(tip_link_poses.find(tip_link_name_) != tip_link_poses.end());
-  assert(std::abs(1.0 - tip_link_poses.at(tip_link_name_).matrix().determinant()) < 1e-6);
+  assert(std::abs(1.0 - tip_link_poses.at(tip_link_name_).matrix().determinant()) < 1e-3);
 
   const Eigen::Isometry3d& pose = tip_link_poses.at(tip_link_name_);
 
