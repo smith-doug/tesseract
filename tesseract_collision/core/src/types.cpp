@@ -128,6 +128,7 @@ tesseract_collision::ContactResultVector ContactTrajectorySubstepResults::worstC
   double worst_distance = std::numeric_limits<double>::max();
   for (const auto& collision : contacts)
   {
+    
     if (collision.second.front().distance < worst_distance)
     {
       worst_distance = collision.second.front().distance;
