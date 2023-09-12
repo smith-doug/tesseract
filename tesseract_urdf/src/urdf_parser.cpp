@@ -58,7 +58,7 @@ tesseract_scene_graph::SceneGraph::UPtr parseURDFString(const std::string& urdf_
     std::throw_with_nested(std::runtime_error("URDF: Missing or failed parsing attribute 'name'!"));
 
   int urdf_version = 1;
-  auto version_status = robot->QueryIntAttribute("version", &urdf_version);
+  auto version_status = robot->QueryIntAttribute("mesh_version", &urdf_version);
   if (version_status != tinyxml2::XML_NO_ATTRIBUTE && version_status != tinyxml2::XML_SUCCESS)
     std::throw_with_nested(
         std::runtime_error("URDF: Failed parsing attribute 'version' for robot '" + robot_name + "'!"));
